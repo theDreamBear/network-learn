@@ -1,0 +1,4 @@
+/Users/nichao/Code/c++/networks/hello_world/cmake-build-debug/CMakeFiles/hello_server.dir
+/Users/nichao/Code/c++/networks/hello_world/cmake-build-debug/CMakeFiles/hello_client.dir
+/Users/nichao/Code/c++/networks/hello_world/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/nichao/Code/c++/networks/hello_world/cmake-build-debug/CMakeFiles/rebuild_cache.dir
