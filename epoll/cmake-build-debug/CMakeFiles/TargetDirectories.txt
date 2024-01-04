@@ -1,3 +1,4 @@
-/Users/nichao/Code/c++/networks/epoll/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/nichao/Code/c++/networks/epoll/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/nichao/Code/c++/networks/epoll/cmake-build-debug/CMakeFiles/epoll.dir
+/home/homework/network-learn/epoll/cmake-build-debug/CMakeFiles/epoll.dir
+/home/homework/network-learn/epoll/cmake-build-debug/CMakeFiles/client.dir
+/home/homework/network-learn/epoll/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/homework/network-learn/epoll/cmake-build-debug/CMakeFiles/rebuild_cache.dir
