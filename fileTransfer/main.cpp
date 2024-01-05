@@ -1,30 +1,5 @@
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <iostream>
-#include <string.h>
-#include <string>
-#include <stdio.h>
-
-#define Perrorf(str) { \
-    char buffer[1024] = {0}; \
-    snprintf(buffer, sizeof(buffer), "%s line[%d], func[%s]", str, __LINE__, __func__); \
-    perror(buffer); \
-}
-
-int readn(int sock, char* buf, int len) {
-    int readSize = 0;
-    while (readSize < len) {
-        int ret = read(sock, buf + readSize, len - readSize);
-        if (ret < 0) {
-            Perrorf("read error");
-            return -1;
-        }
-        readSize += ret;
-    }
-    return readSize;
-}
+#include "simple.h"
+#include "log.h"
 
 int read_client_command(int sock, char* buf, int len) {
     int ret = 0;
@@ -70,24 +45,34 @@ void handle_client(int sock) {
         if (strncasecmp(buf, "list", 4) == 0) {
             std::cout << "list" << std::endl;
             char cmd[4096] = {0};
-            snprintf(cmd, sizeof(cmd), "ls -l %s", baseDir);
+            //
+            snprintf(cmd, sizeof(cmd), "ls -l %s | wc -c", baseDir);
             FILE* fp = popen(cmd, "r");
             if (fp == NULL) {
                 perror("popen error");
                 break;
             }
-            while (fgets(buf + 4, sizeof(buf) - 4, fp) != NULL) {
-                int len = strlen(buf + 4);
-                int length = htonl(len);
-                memcpy(buf, &length, sizeof(length));
-                write(sock, buf, len + sizeof(length));
-                buf[len] = '\0';
-                printf("size:%d %s\n", len, buf + 4);
-            }
+            int len = 0;
+            fscanf(fp, "%d", &len);
             pclose(fp);
-            int length = htonl(0);
-            memcpy(buf, &length, sizeof(length));
-            write(sock, buf, length + sizeof(length));
+            snprintf(cmd, sizeof(cmd), "ls -l %s", baseDir);
+            fp = popen(cmd, "r");
+            if (fp == NULL) {
+                perror("popen error");
+                break;
+            }
+            int pfp = fileno(fp);
+            char* data = (char*)malloc(len + 1);
+            int readSize = readn(pfp, data, len);
+            if (readSize < 0) {
+                WARN << "read error";
+                break;
+            }
+            data[len] = '\0';
+            command_t * read_cmd = new_command(LIST, len);
+            command_set_data(read_cmd, (const char*)data, len);
+            write_command(sock, read_cmd);
+            INFO << "send list success";
         } else if (strncasecmp(buf, "read", 4) == 0) {
             const char* filename = buf + 4;
             std::cout << "read" << filename << std::endl;
@@ -168,7 +153,7 @@ int main() {
             continue;
         }
         char addr_buf[INET_ADDRSTRLEN] = {0};
-        if (inet_ntop(AF_INET, &client_addr.sin_addr, addr_buf, sizeof(addr_buf)) <= 0) {
+        if (inet_ntop(AF_INET, &client_addr.sin_addr, addr_buf, sizeof(addr_buf)) == NULL) {
             std::cout << "inet_ntop error" << std::endl;
             continue;
         }

@@ -3,6 +3,8 @@
 
 CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/client.cpp \
   /usr/include/stdc-predef.h \
+  /home/homework/network-learn/fileTransfer/simple.h \
+  /home/homework/network-learn/fileTransfer/net.h \
   /usr/include/sys/socket.h \
   /usr/include/features.h \
   /usr/include/sys/cdefs.h \
@@ -61,20 +63,24 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
   /usr/include/xlocale.h \
   /usr/include/c++/4.8.2/exception \
   /usr/include/c++/4.8.2/bits/atomic_lockfree_defines.h \
+  /usr/include/c++/4.8.2/bits/exception_ptr.h \
+  /usr/include/c++/4.8.2/bits/exception_defines.h \
+  /usr/include/c++/4.8.2/bits/nested_exception.h \
   /usr/include/c++/4.8.2/bits/char_traits.h \
   /usr/include/c++/4.8.2/bits/stl_algobase.h \
   /usr/include/c++/4.8.2/bits/functexcept.h \
-  /usr/include/c++/4.8.2/bits/exception_defines.h \
   /usr/include/c++/4.8.2/bits/cpp_type_traits.h \
   /usr/include/c++/4.8.2/ext/type_traits.h \
   /usr/include/c++/4.8.2/ext/numeric_traits.h \
   /usr/include/c++/4.8.2/bits/stl_pair.h \
   /usr/include/c++/4.8.2/bits/move.h \
   /usr/include/c++/4.8.2/bits/concept_check.h \
+  /usr/include/c++/4.8.2/type_traits \
   /usr/include/c++/4.8.2/bits/stl_iterator_base_types.h \
   /usr/include/c++/4.8.2/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/4.8.2/debug/debug.h \
   /usr/include/c++/4.8.2/bits/stl_iterator.h \
+  /usr/include/c++/4.8.2/cstdint \
   /usr/include/c++/4.8.2/bits/localefwd.h \
   /usr/include/c++/4.8.2/x86_64-redhat-linux/bits/c++locale.h \
   /usr/include/c++/4.8.2/clocale \
@@ -104,6 +110,28 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
   /usr/include/c++/4.8.2/backward/binders.h \
   /usr/include/c++/4.8.2/bits/range_access.h \
   /usr/include/c++/4.8.2/bits/basic_string.h \
+  /usr/include/c++/4.8.2/initializer_list \
+  /usr/include/c++/4.8.2/ext/string_conversions.h \
+  /usr/include/c++/4.8.2/cstdlib \
+  /usr/include/stdlib.h \
+  /usr/include/bits/waitflags.h \
+  /usr/include/bits/waitstatus.h \
+  /usr/include/alloca.h \
+  /usr/include/bits/stdlib-float.h \
+  /usr/include/c++/4.8.2/cstdio \
+  /usr/include/libio.h \
+  /usr/include/_G_config.h \
+  /usr/include/bits/stdio_lim.h \
+  /usr/include/bits/sys_errlist.h \
+  /usr/include/c++/4.8.2/cerrno \
+  /usr/include/errno.h \
+  /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h \
+  /usr/include/asm/errno.h \
+  /usr/include/asm-generic/errno.h \
+  /usr/include/asm-generic/errno-base.h \
+  /usr/include/c++/4.8.2/bits/functional_hash.h \
+  /usr/include/c++/4.8.2/bits/hash_bytes.h \
   /usr/include/c++/4.8.2/bits/basic_string.tcc \
   /usr/include/c++/4.8.2/bits/locale_classes.tcc \
   /usr/include/c++/4.8.2/streambuf \
@@ -121,13 +149,27 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
   /usr/include/c++/4.8.2/istream \
   /usr/include/c++/4.8.2/bits/istream.tcc \
   /usr/include/string.h \
-  /usr/include/libio.h \
-  /usr/include/_G_config.h \
-  /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/sys_errlist.h
+  /home/homework/network-learn/fileTransfer/log.h \
+  /usr/include/sys/time.h \
+  /usr/include/sys/stat.h \
+  /usr/include/bits/stat.h \
+  /usr/include/fcntl.h \
+  /usr/include/bits/fcntl.h \
+  /usr/include/bits/fcntl-linux.h \
+  /usr/include/linux/falloc.h \
+  /usr/include/c++/4.8.2/sstream \
+  /usr/include/c++/4.8.2/bits/sstream.tcc
 
 
-/usr/include/_G_config.h:
+/usr/include/c++/4.8.2/bits/sstream.tcc:
+
+/usr/include/bits/fcntl.h:
+
+/usr/include/fcntl.h:
+
+/usr/include/bits/stat.h:
+
+/usr/include/sys/time.h:
 
 /usr/include/c++/4.8.2/bits/istream.tcc:
 
@@ -137,9 +179,7 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
 
 /usr/include/c++/4.8.2/bits/basic_ios.tcc:
 
-/usr/include/libio.h:
-
-/usr/include/c++/4.8.2/bits/locale_facets.tcc:
+/usr/include/bits/fcntl-linux.h:
 
 /usr/include/c++/4.8.2/cwctype:
 
@@ -147,21 +187,53 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
 
 /usr/include/c++/4.8.2/streambuf:
 
+/usr/include/c++/4.8.2/bits/functional_hash.h:
+
+/usr/include/asm-generic/errno-base.h:
+
+/usr/include/asm/errno.h:
+
+/usr/include/linux/errno.h:
+
+/usr/include/bits/errno.h:
+
+/usr/include/c++/4.8.2/cerrno:
+
+/usr/include/_G_config.h:
+
+/usr/include/c++/4.8.2/bits/locale_facets.tcc:
+
+/usr/include/libio.h:
+
+/usr/include/c++/4.8.2/cstdio:
+
+/usr/include/bits/stdlib-float.h:
+
+/usr/include/alloca.h:
+
+/usr/include/bits/waitstatus.h:
+
+/usr/include/bits/waitflags.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/c++/4.8.2/cstdlib:
+
+/usr/include/c++/4.8.2/initializer_list:
+
 /usr/include/c++/4.8.2/bits/range_access.h:
 
 /usr/include/c++/4.8.2/bits/stl_function.h:
 
 /usr/include/c++/4.8.2/bits/cxxabi_forced.h:
 
-/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include/stdint.h:
+/usr/include/c++/4.8.2/bits/allocator.h:
 
-/usr/include/stdio.h:
+/usr/include/c++/4.8.2/string:
+
+/usr/include/c++/4.8.2/x86_64-redhat-linux/bits/atomic_word.h:
 
 /usr/include/arpa/inet.h:
-
-/usr/include/c++/4.8.2/x86_64-redhat-linux/bits/c++config.h:
-
-/usr/include/c++/4.8.2/bits/postypes.h:
 
 /usr/include/c++/4.8.2/istream:
 
@@ -170,6 +242,8 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
 /usr/include/unistd.h:
 
 /usr/include/bits/confname.h:
+
+/usr/include/c++/4.8.2/bits/nested_exception.h:
 
 /usr/include/asm-generic/sockios.h:
 
@@ -183,29 +257,13 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
 
 /usr/include/c++/4.8.2/x86_64-redhat-linux/bits/cpu_defines.h:
 
-/usr/include/sys/uio.h:
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include/stdint.h:
 
-/usr/include/c++/4.8.2/bits/exception_defines.h:
+/usr/include/stdio.h:
 
-/usr/include/time.h:
+/usr/include/c++/4.8.2/bits/locale_classes.h:
 
-/usr/include/c++/4.8.2/bits/ostream_insert.h:
-
-/usr/include/bits/wordsize.h:
-
-/usr/include/c++/4.8.2/ext/type_traits.h:
-
-/usr/include/asm/sockios.h:
-
-/usr/include/bits/setjmp.h:
-
-/usr/include/c++/4.8.2/bits/memoryfwd.h:
-
-/usr/include/bits/wchar.h:
-
-/usr/include/bits/typesizes.h:
-
-/usr/include/gnu/stubs.h:
+/usr/include/bits/environments.h:
 
 /usr/include/c++/4.8.2/bits/cpp_type_traits.h:
 
@@ -213,9 +271,9 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
 
 /usr/include/bits/sigset.h:
 
-/usr/include/c++/4.8.2/x86_64-redhat-linux/bits/os_defines.h:
+/usr/include/c++/4.8.2/x86_64-redhat-linux/bits/c++allocator.h:
 
-/usr/include/features.h:
+/usr/include/pthread.h:
 
 /usr/include/bits/uio.h:
 
@@ -223,9 +281,27 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
 
 /usr/include/c++/4.8.2/ext/atomicity.h:
 
+/usr/include/c++/4.8.2/ext/string_conversions.h:
+
+/usr/include/c++/4.8.2/bits/memoryfwd.h:
+
+/home/homework/network-learn/fileTransfer/net.h:
+
+/home/homework/network-learn/fileTransfer/log.h:
+
+/home/homework/network-learn/fileTransfer/simple.h:
+
+/usr/include/c++/4.8.2/bits/basic_string.h:
+
+/usr/include/bits/sched.h:
+
+/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include/stddef.h:
+
 /usr/include/c++/4.8.2/new:
 
 /usr/include/bits/posix_opt.h:
+
+/usr/include/sys/stat.h:
 
 /usr/include/c++/4.8.2/bits/streambuf_iterator.h:
 
@@ -237,33 +313,79 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
 
 /usr/include/stdc-predef.h:
 
+/usr/include/sys/cdefs.h:
+
+/usr/include/sys/select.h:
+
 /usr/include/sys/types.h:
 
 /usr/include/c++/4.8.2/bits/basic_string.tcc:
 
 /usr/include/c++/4.8.2/bits/ios_base.h:
 
+/usr/include/c++/4.8.2/bits/functexcept.h:
+
+/usr/include/bits/socket.h:
+
+/usr/include/sys/uio.h:
+
+/usr/include/c++/4.8.2/bits/ostream_insert.h:
+
+/usr/include/bits/wordsize.h:
+
+/usr/include/c++/4.8.2/ext/type_traits.h:
+
+/usr/include/asm/sockios.h:
+
+/usr/include/bits/setjmp.h:
+
 /usr/include/netinet/in.h:
+
+/usr/include/bits/wchar.h:
+
+/usr/include/gnu/stubs.h:
+
+/usr/include/bits/typesizes.h:
+
+/usr/include/time.h:
+
+/usr/include/c++/4.8.2/bits/exception_defines.h:
 
 /usr/include/c++/4.8.2/iostream:
 
-/usr/include/bits/types.h:
+/usr/include/errno.h:
 
-/usr/lib/gcc/x86_64-redhat-linux/4.8.5/include/stddef.h:
+/usr/include/bits/types.h:
 
 /usr/include/bits/pthreadtypes.h:
 
+/usr/include/bits/sockaddr.h:
+
+/usr/include/bits/timex.h:
+
+/usr/include/wchar.h:
+
+/usr/include/c++/4.8.2/cwchar:
+
+/usr/include/bits/byteswap-16.h:
+
+/usr/include/c++/4.8.2/bits/hash_bytes.h:
+
 /usr/include/endian.h:
-
-/usr/include/sys/select.h:
-
-/usr/include/sys/cdefs.h:
 
 /usr/include/bits/in.h:
 
 /home/homework/network-learn/fileTransfer/client.cpp:
 
 /usr/include/bits/select.h:
+
+/usr/include/c++/4.8.2/x86_64-redhat-linux/bits/c++config.h:
+
+/usr/include/asm-generic/errno.h:
+
+/usr/include/c++/4.8.2/bits/postypes.h:
+
+/usr/include/c++/4.8.2/x86_64-redhat-linux/bits/os_defines.h:
 
 /usr/include/getopt.h:
 
@@ -273,8 +395,6 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
 
 /usr/include/c++/4.8.2/bits/stl_iterator_base_funcs.h:
 
-/usr/include/c++/4.8.2/bits/allocator.h:
-
 /usr/include/c++/4.8.2/bits/stringfwd.h:
 
 /usr/include/bits/locale.h:
@@ -283,39 +403,25 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
 
 /usr/lib/gcc/x86_64-redhat-linux/4.8.5/include/stdarg.h:
 
+/usr/include/linux/falloc.h:
+
 /usr/include/c++/4.8.2/ext/new_allocator.h:
 
 /usr/include/c++/4.8.2/bits/atomic_lockfree_defines.h:
 
-/usr/include/c++/4.8.2/x86_64-redhat-linux/bits/atomic_word.h:
+/usr/include/features.h:
+
+/usr/include/c++/4.8.2/bits/exception_ptr.h:
 
 /usr/include/c++/4.8.2/bits/char_traits.h:
 
 /usr/include/c++/4.8.2/bits/stl_algobase.h:
 
-/usr/include/bits/socket.h:
-
-/usr/include/c++/4.8.2/bits/functexcept.h:
-
 /usr/include/c++/4.8.2/ext/numeric_traits.h:
 
 /usr/include/c++/4.8.2/bits/concept_check.h:
 
-/usr/include/c++/4.8.2/ios:
-
-/usr/include/c++/4.8.2/bits/stl_iterator.h:
-
-/usr/include/bits/stdio_lim.h:
-
-/usr/include/wctype.h:
-
-/usr/include/bits/socket_type.h:
-
-/usr/include/c++/4.8.2/bits/localefwd.h:
-
-/usr/include/c++/4.8.2/iosfwd:
-
-/usr/include/c++/4.8.2/x86_64-redhat-linux/bits/gthr.h:
+/usr/include/c++/4.8.2/type_traits:
 
 /usr/include/c++/4.8.2/x86_64-redhat-linux/bits/ctype_inline.h:
 
@@ -324,6 +430,26 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
 /usr/include/xlocale.h:
 
 /usr/include/c++/4.8.2/x86_64-redhat-linux/bits/c++locale.h:
+
+/usr/include/c++/4.8.2/ios:
+
+/usr/include/c++/4.8.2/bits/stl_iterator.h:
+
+/usr/include/c++/4.8.2/cstdint:
+
+/usr/include/wctype.h:
+
+/usr/include/bits/stdio_lim.h:
+
+/usr/include/bits/socket_type.h:
+
+/usr/include/c++/4.8.2/bits/localefwd.h:
+
+/usr/include/c++/4.8.2/sstream:
+
+/usr/include/c++/4.8.2/iosfwd:
+
+/usr/include/c++/4.8.2/x86_64-redhat-linux/bits/gthr.h:
 
 /usr/include/c++/4.8.2/clocale:
 
@@ -335,9 +461,9 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
 
 /usr/include/c++/4.8.2/bits/basic_ios.h:
 
-/usr/include/c++/4.8.2/exception:
-
 /usr/include/sys/sysmacros.h:
+
+/usr/include/c++/4.8.2/exception:
 
 /usr/include/ctype.h:
 
@@ -350,27 +476,3 @@ CMakeFiles/client.dir/client.cpp.o: /home/homework/network-learn/fileTransfer/cl
 /usr/include/bits/endian.h:
 
 /usr/include/sched.h:
-
-/usr/include/c++/4.8.2/bits/basic_string.h:
-
-/usr/include/bits/sched.h:
-
-/usr/include/bits/sockaddr.h:
-
-/usr/include/wchar.h:
-
-/usr/include/c++/4.8.2/cwchar:
-
-/usr/include/bits/byteswap-16.h:
-
-/usr/include/bits/timex.h:
-
-/usr/include/bits/environments.h:
-
-/usr/include/c++/4.8.2/bits/locale_classes.h:
-
-/usr/include/c++/4.8.2/string:
-
-/usr/include/pthread.h:
-
-/usr/include/c++/4.8.2/x86_64-redhat-linux/bits/c++allocator.h:

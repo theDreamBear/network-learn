@@ -4,6 +4,8 @@
 CMakeFiles/fileTransfer.dir/main.cpp.o
  /home/homework/network-learn/fileTransfer/main.cpp
  /usr/include/stdc-predef.h
+ /home/homework/network-learn/fileTransfer/simple.h
+ /home/homework/network-learn/fileTransfer/net.h
  /usr/include/sys/socket.h
  /usr/include/features.h
  /usr/include/sys/cdefs.h
@@ -62,20 +64,24 @@ CMakeFiles/fileTransfer.dir/main.cpp.o
  /usr/include/xlocale.h
  /usr/include/c++/4.8.2/exception
  /usr/include/c++/4.8.2/bits/atomic_lockfree_defines.h
+ /usr/include/c++/4.8.2/bits/exception_ptr.h
+ /usr/include/c++/4.8.2/bits/exception_defines.h
+ /usr/include/c++/4.8.2/bits/nested_exception.h
  /usr/include/c++/4.8.2/bits/char_traits.h
  /usr/include/c++/4.8.2/bits/stl_algobase.h
  /usr/include/c++/4.8.2/bits/functexcept.h
- /usr/include/c++/4.8.2/bits/exception_defines.h
  /usr/include/c++/4.8.2/bits/cpp_type_traits.h
  /usr/include/c++/4.8.2/ext/type_traits.h
  /usr/include/c++/4.8.2/ext/numeric_traits.h
  /usr/include/c++/4.8.2/bits/stl_pair.h
  /usr/include/c++/4.8.2/bits/move.h
  /usr/include/c++/4.8.2/bits/concept_check.h
+ /usr/include/c++/4.8.2/type_traits
  /usr/include/c++/4.8.2/bits/stl_iterator_base_types.h
  /usr/include/c++/4.8.2/bits/stl_iterator_base_funcs.h
  /usr/include/c++/4.8.2/debug/debug.h
  /usr/include/c++/4.8.2/bits/stl_iterator.h
+ /usr/include/c++/4.8.2/cstdint
  /usr/include/c++/4.8.2/bits/localefwd.h
  /usr/include/c++/4.8.2/x86_64-redhat-linux/bits/c++locale.h
  /usr/include/c++/4.8.2/clocale
@@ -105,6 +111,28 @@ CMakeFiles/fileTransfer.dir/main.cpp.o
  /usr/include/c++/4.8.2/backward/binders.h
  /usr/include/c++/4.8.2/bits/range_access.h
  /usr/include/c++/4.8.2/bits/basic_string.h
+ /usr/include/c++/4.8.2/initializer_list
+ /usr/include/c++/4.8.2/ext/string_conversions.h
+ /usr/include/c++/4.8.2/cstdlib
+ /usr/include/stdlib.h
+ /usr/include/bits/waitflags.h
+ /usr/include/bits/waitstatus.h
+ /usr/include/alloca.h
+ /usr/include/bits/stdlib-float.h
+ /usr/include/c++/4.8.2/cstdio
+ /usr/include/libio.h
+ /usr/include/_G_config.h
+ /usr/include/bits/stdio_lim.h
+ /usr/include/bits/sys_errlist.h
+ /usr/include/c++/4.8.2/cerrno
+ /usr/include/errno.h
+ /usr/include/bits/errno.h
+ /usr/include/linux/errno.h
+ /usr/include/asm/errno.h
+ /usr/include/asm-generic/errno.h
+ /usr/include/asm-generic/errno-base.h
+ /usr/include/c++/4.8.2/bits/functional_hash.h
+ /usr/include/c++/4.8.2/bits/hash_bytes.h
  /usr/include/c++/4.8.2/bits/basic_string.tcc
  /usr/include/c++/4.8.2/bits/locale_classes.tcc
  /usr/include/c++/4.8.2/streambuf
@@ -122,8 +150,14 @@ CMakeFiles/fileTransfer.dir/main.cpp.o
  /usr/include/c++/4.8.2/istream
  /usr/include/c++/4.8.2/bits/istream.tcc
  /usr/include/string.h
- /usr/include/libio.h
- /usr/include/_G_config.h
- /usr/include/bits/stdio_lim.h
- /usr/include/bits/sys_errlist.h
+ /home/homework/network-learn/fileTransfer/log.h
+ /usr/include/sys/time.h
+ /usr/include/sys/stat.h
+ /usr/include/bits/stat.h
+ /usr/include/fcntl.h
+ /usr/include/bits/fcntl.h
+ /usr/include/bits/fcntl-linux.h
+ /usr/include/linux/falloc.h
+ /usr/include/c++/4.8.2/sstream
+ /usr/include/c++/4.8.2/bits/sstream.tcc
 

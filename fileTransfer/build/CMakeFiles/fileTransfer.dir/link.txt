@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/fileTransfer.dir/main.cpp.o -o fileTransfer 
+/usr/bin/c++  -std=c++11 -pthread CMakeFiles/fileTransfer.dir/main.cpp.o -o fileTransfer 
