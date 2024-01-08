@@ -15,6 +15,9 @@ int write_response(int sock, int length, int read_fd, TYPE type) {
     // 写type
     write(sock, &type, sizeof(type));
     DEBUG << "length:[" << length << "] type[" << TYPE_STR[type] << "]";
+    if (length == 1) {
+        return 0;
+    }
     // 读取文件内容
     char buf[4096] = {0};
     int readSize = 0;
@@ -66,7 +69,7 @@ int check_dir_valid(const char* path) {
 
 int handle_client(int sock) {
     char buf[4096] = {0};
-    const char* baseDir = "/home/homework/";
+    const char* baseDir = "/Users/nichao/";
     if (check_dir_valid(baseDir) < 0) {
         ERROR << "baseDir invalid";
         return -1;
@@ -125,8 +128,8 @@ int handle_client(int sock) {
                 if (fp == NULL) {
                     Perrorf("fopen error");
                     // 发送文件不存在
-                    write_response(sock, 0, 0, READ);
-                    continue;
+                    write_response(sock, 1, 0, READ);
+                    break;
                 }
                 // 发送文件长度
                 fseek(fp, 0, SEEK_END);

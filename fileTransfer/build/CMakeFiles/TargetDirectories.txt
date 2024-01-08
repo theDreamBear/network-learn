@@ -1,4 +1,0 @@
-/home/homework/network-learn/fileTransfer/build/CMakeFiles/fileTransfer.dir
-/home/homework/network-learn/fileTransfer/build/CMakeFiles/client.dir
-/home/homework/network-learn/fileTransfer/build/CMakeFiles/edit_cache.dir
-/home/homework/network-learn/fileTransfer/build/CMakeFiles/rebuild_cache.dir

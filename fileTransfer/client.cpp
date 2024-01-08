@@ -27,7 +27,6 @@ int input_command( int sock, command_t** cmd) {
         return -1;
     }
     *cmd = new_command(type, 0);
-    command_guard guard(*cmd);
     int ret = 0;
     if (has_data(*cmd)) {
         if (type == READ) {
@@ -66,6 +65,7 @@ int main(int argc, char** argv) {
             WARN << "input command error";
             continue;
         }
+
         if (command_type(cmd) == QUIT) {
             INFO << "quit";
             break;
@@ -82,6 +82,7 @@ int main(int argc, char** argv) {
         print_command(cmd);
         // 从服务端读取命令
         command_t* read_cmd = NULL;
+        command_guard read_guard(read_cmd);
         ret = read_command(sock, &read_cmd);
         if (ret < 0) {
             ERROR << "read command error";
@@ -90,15 +91,14 @@ int main(int argc, char** argv) {
             break;
         }
         print_command(read_cmd);
-        command_guard read_guard(read_cmd);
         TYPE type = command_type(read_cmd);
         switch (type) {
             case READ: {
-                int len = read_cmd->size - sizeof(TYPE);
-                if (len == 0) {
+                if (read_cmd->size == 1) {
                     INFO << "file not exist";
                     break;
                 }
+                int len = read_cmd->size - sizeof(TYPE);
                 std::string filename(command_inner_data(cmd), command_inner_data(cmd) + len);
                 FILE* fp = fopen(filename.c_str(), "w");
                 if (fp == NULL) {
