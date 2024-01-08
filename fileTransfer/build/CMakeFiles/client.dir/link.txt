@@ -1,1 +1,1 @@
-/usr/bin/c++  -std=c++11 -pthread CMakeFiles/client.dir/client.cpp.o -o client 
+/Library/Developer/CommandLineTools/usr/bin/c++  -std=c++11 -pthread -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/client.dir/client.cpp.o -o client 

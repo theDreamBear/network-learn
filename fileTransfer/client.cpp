@@ -22,6 +22,7 @@ int input_command(command_t** cmd, int sock) {
         if (type == READ) {
             std::string filename;
             std::cin >> filename;
+            DEBUG << "filename:" << filename;
             command_set_data(*cmd, filename.c_str(), filename.size());
         } else {
             INFO << "unknown command" << std::endl;
@@ -37,7 +38,7 @@ int main(int argc, char** argv) {
     bzero(&addr, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_port = htons(8080);
-    addr.sin_addr.s_addr = inet_addr("10.116.32.38");
+    addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     int sock;
     Socket(sock);
@@ -45,8 +46,8 @@ int main(int argc, char** argv) {
     char buf[4096] = {0};
     while (1) {
         command_t* cmd = NULL;
-        command_guard guard(cmd);
         int ret = input_command(&cmd, sock);
+        command_guard guard(cmd);
         if (command_type(cmd) == QUIT) {
             INFO << "quit";
             break;
@@ -67,13 +68,14 @@ int main(int argc, char** argv) {
         DEBUG << "write command success";
         command_t* read_cmd = NULL;
         ret = read_command(sock, &read_cmd);
+        command_guard read_guard(read_cmd);
         if (ret < 0) {
             ERROR << "read command error";
         }
         if (ret == 0) {
             break;
         }
-        print_command(read_cmd);
+        print_command(read_cmd, false);
         if (command_type(read_cmd) == READ) {
             int len = cmd->size - sizeof(TYPE);
             std::string filename(command_inner_data(cmd), command_inner_data(cmd) + len);

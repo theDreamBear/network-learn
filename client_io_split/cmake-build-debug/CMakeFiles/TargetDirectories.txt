@@ -1,4 +1,0 @@
-/Users/nichao/Code/c++/networks/client_io_split/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/nichao/Code/c++/networks/client_io_split/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/nichao/Code/c++/networks/client_io_split/cmake-build-debug/CMakeFiles/server.dir
-/Users/nichao/Code/c++/networks/client_io_split/cmake-build-debug/CMakeFiles/client_io_split.dir

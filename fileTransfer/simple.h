@@ -130,18 +130,33 @@ int read_command(int sock, command_t** cmd) {
     return hret + ret;
 }
 
-void print_command(command_t* cmd) {
+int read_command_length(int sock) {
+    int nlen = 0;
+    int hret = readn(sock, (char*)&nlen, sizeof(nlen));
+    if (hret < 0) {
+        Perrorf("read error");
+        return -1;
+    }
+    if (hret == 0) {
+        INFO << "socket quit";
+        return -1;
+    }
+    return ntohl(nlen);
+}
+
+void print_command(command_t* cmd, bool has_type = true) {
     if (cmd == NULL) {
         return;
     }
-    if (command_type(cmd) > command_max()) {
+    if (has_type && command_type(cmd) > command_max()) {
         INFO << "unknown command";
         return;
     }
-    char buffer[4096] = {0};
+    char buffer[8192] = {0};
     memcpy(buffer, command_inner_data(cmd), cmd->size - sizeof(TYPE));
     buffer[cmd->size - sizeof(TYPE)] = '\0';
-    DEBUG << "Command: " << TYPE_STR[command_type(cmd)] << " " << "Size: " << cmd->size << " " << "Data: \n" << buffer;
+    const char* type = has_type ? TYPE_STR[command_type(cmd)] : "";
+    DEBUG << "Command: " << type << " " << "Size: " << cmd->size << " " << "Data: \n" << buffer;
 }
 
 class command_guard {

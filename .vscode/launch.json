@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/nichao/Code/c++/networks/fileTransfer",
+      "program": "/Users/nichao/Code/c++/networks/fileTransfer/build/Debug/outDebug"
+    }
+  ]
+}
