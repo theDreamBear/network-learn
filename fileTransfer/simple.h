@@ -3,6 +3,7 @@
 
 #include "net.h"
 #include "log.h"
+#include <assert.h>
 
 enum TYPE : signed char {
     QUIT = 0,
@@ -18,145 +19,295 @@ const char* TYPE_STR[] = {
     "CHECKOUT",
 };
 
-
 typedef struct command {
-    int size;
+    int32_t size;
     char data[0];
 } command_t;
 
-
-char command_max() {
+/**
+ * @brief 获取命令最大值
+ * @return char 命令最大值
+ * @retval CHECKOUT
+*/
+static TYPE command_max() {
     return CHECKOUT;
 }
 
+/**
+ * @brief 获取命令数据
+ * @param cmd 命令
+ * @return char* 命令数据, 包括type
+*/
 char* command_data(command_t* cmd) {
+    assert(cmd != nullptr);
     return cmd->data;
 }
+
+/**
+ * @brief 获取命令数据
+ * @param cmd 命令
+ * @return char* 命令数据, 不包括type
+*/
 char* command_inner_data(command_t* cmd) {
-    return cmd->data + 1;
+    assert(cmd != nullptr);
+    return cmd->data + sizeof(TYPE);
 }
 
+/**
+ * @brief 获取命令类型
+ * @param cmd 命令
+ * @return TYPE 命令类型
+*/
 TYPE command_type(command_t* cmd) {
+    assert(cmd != nullptr);
     return (TYPE)cmd->data[0];
 }
 
-int command_size(int data_size) {
+/**
+ * @brief 获取命令长度
+ * @param cmd 命令
+ * @return int32_t 命令长度
+ * @note 用于从data size 获得整个data需要的size
+*/
+static int32_t _data_size(int32_t data_size) {
     return sizeof(TYPE) + data_size;
 }
 
+/**
+ * @brief 创建命令
+ * @param type 命令类型
+ * @param len 命令长度
+ * @return command_t* 命令
+ * @note 用于创建命令
+*/
 command_t* new_command(TYPE type, int len) {
-    command_t* cmd = (command_t*)malloc(command_size(len) + sizeof(command_t));
-    cmd->size = command_size(len);
+    command_t* cmd = (command_t*)malloc(_data_size(len) + sizeof(command_t));
+    assert(cmd != nullptr);
+    cmd->size = _data_size(len);
     cmd->data[0] = type;
     return cmd;
 }
 
+/**
+ * @brief 创建命令
+ * @param type 命令类型
+ * @param len 命令长度
+ * @param data 命令数据
+ * @return command_t* 命令
+ * @note 用于创建命令
+*/
 command_t* new_command(TYPE type, int len, char* data) {
     command_t* cmd = new_command(type, len);
-    cmd->size = command_size(len);
     memcpy(command_inner_data(cmd), data, len);
     return cmd;
 }
 
-void command_set_data(command_t* cmd, const char* data, int len) {
-    memcpy(command_inner_data(cmd), data, len);
-    cmd->size = command_size(len);
-}
-
+/**
+ * @brief 判断命令是否有数据
+ * @param cmd 命令
+ * @return bool 是否有数据
+ * @retval true 有数据
+ * @retval false 无数据
+ * @note 用于判断命令是否有数据, 目前只支持READ
+*/
 bool has_data(command_t* cmd) {
+    assert(cmd != nullptr);
     return command_type(cmd) == READ;
 }
 
+/**
+ * @brief 释放命令
+ * @param cmd 命令
+ * @note 用于释放命令
+*/
 void free_command(command_t* cmd) {
+    if (cmd == NULL) {
+        return;
+    }
     free(cmd);
+}
+
+/**
+ * @brief 写入命令长度
+ * @param sock socket
+ * @param lenght 长度
+ * @return int32_t 写入的字节数
+ * @retval -1 写入失败
+ * @retval 0 socket关闭
+ * @retval >0 写入的字节数
+*/
+int32_t read_command_length(int sock) {
+    int32_t nlen = 0;
+    int32_t hret = readn(sock, (char*)&nlen, sizeof(nlen));
+    if (hret < 0) {
+        Perrorf("read error");
+        return -1;
+    } else if (hret == 0) {
+        WARN << "socket quit";
+        return 0;
+    }
+    return ntohl(nlen);
+}
+
+/**
+ * @brief 读取命令长度
+ * @param sock socket
+ * @param lenght 长度
+ * @return int32_t 读取的字节数
+ * @retval -1 读取失败
+ * @retval 0 socket关闭
+ * @retval >0 读取的字节数
+*/
+int32_t write_command_length(int sock, int32_t length) {
+    int32_t nlen = htonl(length);
+    int32_t ret = writen(sock, (char*)&nlen, sizeof(nlen));
+    if (ret < 0) {
+        Perrorf("write length error");
+        return -1;
+    } else if (ret == 0) {
+        WARN << "socket quit";
+        return 0;
+    }
+    return ret;
+}
+
+/**
+ * @brief 读取命令数据
+ * @param sock socket
+ * @param cmd 命令
+ * @param bodyLen 数据长度
+ * @return int32_t 读取的字节数
+ * @retval -1 读取失败
+ * @retval 0 socket关闭
+ * @retval >0 读取的字节数
+*/
+int32_t read_command_body(int sock, command_t* cmd, int32_t bodyLen) {
+    assert(cmd != nullptr);
+    if (bodyLen <= 0) {
+        WARN << "bodyLen le 0" << bodyLen;
+        return -1;
+    }
+    int32_t ret = readn(sock, command_data(cmd), bodyLen);
+    if (ret < 0) {
+        Perrorf("read error");
+        return -1;
+    } else if (ret == 0) {
+        WARN << "socket quit";
+        return 0;
+    }
+    return ret;
+}
+
+/**
+ * @brief 写入命令数据
+ * @param sock socket
+ * @param cmd 命令
+ * @return int32_t 写入的字节数
+ * @retval -1 写入失败
+ * @retval 0 socket关闭
+ * @retval >0 写入的字节数
+*/
+int32_t write_command_body(int sock, command_t* cmd) {
+    assert(cmd != nullptr);
+    if (cmd->size <= 0) {
+        WARN << "cmd->size le 0" << cmd->size;
+        return -1;
+    }
+    int ret = writen(sock, command_data(cmd),  cmd->size);
+    if (ret < 0) {
+        Perrorf("write error");
+        return -1;
+    } else if (ret == 0) {
+        WARN << "socket quit";
+        return 0;
+    }
+    return ret;
+}
+
+void set_command_body(command_t* cmd, const char* data, int32_t len) {
+    assert(cmd != nullptr);
+    memcpy(command_inner_data(cmd), data, len);
+    cmd->size = _data_size(len);
 }
 
 /**
  * @brief 写入命令
  * @param sock socket
  * @param cmd 命令
- * @return int 写入的字节数
+ * @return int32_t 写入的数据字节数
  * @retval -1 写入失败
  * @retval >0 写入的字节数
 */
-int write_command(int sock, command_t* cmd) {
-    int bodyLen = cmd->size;
-    int nlen = htonl(bodyLen);
-    int hret = writen(sock, (char*)&nlen, sizeof(nlen));
+int32_t write_command(int sock, command_t* cmd) {
+    DEBUG << "write command";
+    int hret = write_command_length(sock, cmd->size);
     if (hret < 0) {
         Perrorf("write length error");
         return -1;
+    } else if (hret == 0) {
+        WARN << "socket quit";
+        return 0;
     }
-    int ret = writen(sock, command_data(cmd), bodyLen);
+    DEBUG << "write length:" << hret;
+    if (cmd->size == 0) {
+        return 0;
+    }
+    int ret = write_command_body(sock, cmd);
     if (ret < 0) {
-        Perrorf("write error");
+        Perrorf("write body error");
         return -1;
+    } else if (ret == 0) {
+        WARN << "socket quit";
+        return 0;
     }
-    return hret + ret;
+    return ret;
 }
 
 /**
  * @brief 读取命令
  * @param sock socket
  * @param cmd 命令
- * @return int 读取的字节数
- * @retval -1 读取失败
- * @retval 0 socket关闭
- * @retval >0 读取的字节数
+ * @return int32_t 读取的数据子节数
+ * @retval -1 读取失败 _cmd为NULL
+ * @retval 0 socket关闭 cmd不为NULL
+ * @retval >0 读取的字节数 cmd不为NULL
 */
-int read_command(int sock, command_t** cmd) {
-    int nlen = 0;
-    int hret = readn(sock, (char*)&nlen, sizeof(nlen));
-    if (hret < 0) {
-        Perrorf("read error");
+int32_t read_command(int sock, command_t** cmd) {
+    int32_t bodyLen = read_command_length(sock);
+    if (bodyLen < 0) {
+        Perrorf("read length error");
         return -1;
-    }
-    if (hret == 0) {
-        *cmd = NULL;
-        INFO << "socket quit";
+    } else if (bodyLen == 0) {
+        WARN << "socket quit";
         return 0;
     }
-    int bodyLen = ntohl(nlen);
+    DEBUG << "bodyLen:" << bodyLen;
     *cmd = new_command(QUIT, bodyLen);
-    int ret = readn(sock, command_data(*cmd), bodyLen);
+    int32_t ret = readn(sock, command_data(*cmd), bodyLen);
     if (ret < 0) {
         Perrorf("read error");
         return -1;
-    }
-    if (ret == 0) {
+    } else if (ret == 0) {
         INFO << "socket quit";
         return 0;
     }
-    return hret + ret;
+    (*cmd)->size = bodyLen;
+    return bodyLen;
 }
 
-int read_command_length(int sock) {
-    int nlen = 0;
-    int hret = readn(sock, (char*)&nlen, sizeof(nlen));
-    if (hret < 0) {
-        Perrorf("read error");
-        return -1;
-    }
-    if (hret == 0) {
-        INFO << "socket quit";
-        return -1;
-    }
-    return ntohl(nlen);
-}
-
-void print_command(command_t* cmd, bool has_type = true) {
-    if (cmd == NULL) {
-        return;
-    }
-    if (has_type && command_type(cmd) > command_max()) {
-        INFO << "unknown command";
-        return;
-    }
-    char buffer[8192] = {0};
-    memcpy(buffer, command_inner_data(cmd), cmd->size - sizeof(TYPE));
-    buffer[cmd->size - sizeof(TYPE)] = '\0';
-    const char* type = has_type ? TYPE_STR[command_type(cmd)] : "";
-    DEBUG << "Command: " << type << " " << "Size: " << cmd->size << " " << "Data: \n" << buffer;
+#define print_command(cmd) { \
+    if (cmd == NULL) { \
+        return -1; \
+    } \
+    if (command_type(cmd) > command_max()) {\
+        INFO << "unknown command";\
+        return -1;\
+    }\
+    char buffer[8192] = {0};\
+    memcpy(buffer, command_inner_data(cmd), cmd->size - sizeof(TYPE));\
+    buffer[cmd->size - sizeof(TYPE)] = '\0';\
+    const char* type = TYPE_STR[command_type(cmd)];\
+    DEBUG << "Command: [" << type << "] " << "Size: [" << cmd->size << "] " << "Data: [" << buffer << "]\n";\
 }
 
 class command_guard {
@@ -165,10 +316,11 @@ public:
     ~command_guard() {
         if (cmd_) {
             free_command(cmd_);
+            cmd_ = NULL;
         }
     }
 private:
-    command_t* cmd_;
+    command_t* &cmd_;
 };
 
 #endif

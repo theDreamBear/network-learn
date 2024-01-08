@@ -1,1 +1,1 @@
-/Library/Developer/CommandLineTools/usr/bin/c++  -std=c++11 -pthread -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.2.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/fileTransfer.dir/main.cpp.o -o fileTransfer 
+/usr/bin/c++  -std=c++11 -pthread CMakeFiles/fileTransfer.dir/main.cpp.o -o fileTransfer 

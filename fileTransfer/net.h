@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include "log.h"
 
 #define Perrorf(str) { \
     char buffer[1024] = {0}; \
@@ -23,7 +24,9 @@ int readn(int sock, char* buf, int len) {
             Perrorf("read error");
             return -1;
         } else if (ret == 0) {
-            return 0;
+            Perrorf("read error");
+            DEBUG << "readSize:" << readSize;
+            break;
         }
         readSize += ret;
     }
