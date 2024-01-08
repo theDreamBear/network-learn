@@ -24,8 +24,9 @@ void handle_con(int conn) {
         writen(conn, buf, strlen(buf));
         cnt += strlen(buf);
     }
-    sleep(60);
+    sleep(10);
     close(conn);
+    abort();
     printf("cnt: %d\n", cnt);
 }
 
