@@ -40,6 +40,7 @@ int write_response(int sock, int length, FILE* fp, TYPE type) {
             ERROR << "read file EOF";
             return 0;
         }
+        print_command(cmd);
     }
     int ret = write_command(sock, cmd);
     if (ret < 0) {

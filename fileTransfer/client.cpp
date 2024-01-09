@@ -95,10 +95,10 @@ int main(int argc, char** argv) {
         switch (type) {
             case READ: {
                 if (read_cmd->size == 1) {
-                    INFO << "file not exist";
+                    INFO << "empty file";
                     break;
                 }
-                int len = read_cmd->size - sizeof(TYPE);
+                int len = cmd->size - sizeof(TYPE);
                 std::string filename(command_inner_data(cmd), command_inner_data(cmd) + len);
                 FILE* fp = fopen(filename.c_str(), "w");
                 if (fp == NULL) {
@@ -112,6 +112,14 @@ int main(int argc, char** argv) {
             }
             case LIST: {
                 INFO << "list";
+                break;
+            }
+            case ERR: {
+                print_command(read_cmd);
+                for (int i = 0; i < read_cmd->size - sizeof(TYPE); ++i) {
+                    printf("%c", command_inner_data(read_cmd)[i]);
+                }
+                printf("\n");
                 break;
             }
             default: {

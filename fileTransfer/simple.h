@@ -2,6 +2,7 @@
 #define _SIMPLE_H_
 
 #include <assert.h>
+
 #include "log.h"
 #include "net.h"
 
@@ -13,13 +14,7 @@ enum TYPE : signed char {
     ERR = 4,
 };
 
-const char* TYPE_STR[] = {
-    "QUIT",
-    "LIST",
-    "READ",
-    "CHECKOUT",
-    "ERR"
-};
+const char* TYPE_STR[] = {"QUIT", "LIST", "READ", "CHECKOUT", "ERR"};
 
 typedef struct command {
     int32_t size;
@@ -31,9 +26,7 @@ typedef struct command {
  * @return char 命令最大值
  * @retval CHECKOUT
  */
-static TYPE command_max() {
-    return ERR;
-}
+static TYPE command_max() { return ERR; }
 
 /**
  * @brief 获取命令数据
@@ -71,9 +64,7 @@ TYPE command_type(command_t* cmd) {
  * @return int32_t 命令长度
  * @note 用于从data size 获得整个data需要的size
  */
-int32_t _data_size(int32_t data_size) {
-    return sizeof(TYPE) + data_size;
-}
+int32_t _data_size(int32_t data_size) { return sizeof(TYPE) + data_size; }
 
 /**
  * @brief 创建命令
@@ -83,7 +74,8 @@ int32_t _data_size(int32_t data_size) {
  * @note 用于创建命令
  */
 command_t* new_command(TYPE type, int len) {
-    command_t* cmd = (command_t*)malloc(_data_size(len) + sizeof(command_t));
+    command_t* cmd =
+        (command_t*)malloc(_data_size(len) + sizeof(command_t) + 1);
     assert(cmd != nullptr);
     cmd->size = _data_size(len);
     cmd->data[0] = type;
@@ -232,6 +224,7 @@ void set_command_body(command_t* cmd, const char* data, int32_t len) {
     assert(cmd != nullptr);
     memcpy(command_inner_data(cmd), data, len);
     cmd->size = _data_size(len);
+    command_data(cmd)[cmd->size] = '\0';
 }
 
 /**
@@ -299,29 +292,29 @@ int32_t read_command(int sock, command_t** cmd) {
         return 0;
     }
     (*cmd)->size = bodyLen;
+    (*cmd)->data[bodyLen] = '\0';
     return bodyLen;
 }
 
-#define print_command(cmd)                                                 \
-    {                                                                      \
-        if (cmd == NULL) {                                                 \
-            return -1;                                                     \
-        }                                                                  \
-        if (command_type(cmd) > command_max()) {                           \
-            INFO << "unknown command";                                     \
-            return -1;                                                     \
-        }                                                                  \
-        char buffer[8192] = {0};                                           \
-        memcpy(buffer, command_inner_data(cmd), cmd->size - sizeof(TYPE)); \
-        buffer[cmd->size - sizeof(TYPE)] = '\0';                           \
-        const char* type = TYPE_STR[command_type(cmd)];                    \
-        DEBUG << "Command: [" << type << "] "                              \
-              << "Size: [" << cmd->size << "] "                            \
-              << "Data: [" << buffer << "]\n";                             \
+#define print_command(cmd)                                           \
+    {                                                                \
+        if (cmd == NULL) {                                           \
+            return -1;                                               \
+        }                                                            \
+        if (command_type(cmd) > command_max()) {                     \
+            INFO << "unknown command";                               \
+            return -1;                                               \
+        }                                                            \
+        const char* type = TYPE_STR[command_type(cmd)];              \
+        INFO << "Command: [" << type << "] "                         \
+             << "Size: [" << cmd->size << "]\n";                     \
+        if (cmd->size < 4096) {                                      \
+            INFO << "Data: [\n" << command_inner_data(cmd) << "\n]"; \
+        }                                                            \
     }
 
 class command_guard {
-   public:
+ public:
     command_guard(command_t*& cmd) : cmd_(cmd) {}
     ~command_guard() {
         if (cmd_) {
@@ -330,7 +323,7 @@ class command_guard {
         }
     }
 
-   private:
+ private:
     command_t*& cmd_;
 };
 

@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <string.h>
 
 int main() {
     auto fd = socket(AF_INET, SOCK_STREAM, 0);

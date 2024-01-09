@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sstream>
+#include <math.h>
 
 const int LOG_LEVEL_DEBUG = 0;
 const int LOG_LEVEL_INFO = 1;
@@ -30,12 +31,19 @@ const char* LOG_LEVEL_STR[] = {
 // 日志格式：[时间 日志级别 行号 函数名] 日志内容
 // 日志级别：DEBUG INFO WARN ERROR FATAL
 
-const int g_log_level = LOG_LEVEL_DEBUG;
+const int g_log_level = LOG_LEVEL_INFO;
 
 class Log {
 public:
     Log(const char* file, int line, const char* func, int level) {
-        _file = file;
+        // file去掉路径
+        const char* pos = strrchr(file, '/');
+        if (pos != NULL) {
+            _file = pos + 1;
+        } else {
+            _file = file;
+        }
+        //_file = file;
         _line = line;
         _func = func;
         _level = level;
@@ -60,9 +68,16 @@ public:
         struct timeval tv;
         gettimeofday(&tv, NULL);
         char time_buf[64] = {0};
-        strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S", localtime(&tv.tv_sec));
+        // 月-日 时:分:秒
+        int ret = strftime(time_buf, sizeof(time_buf), "%m-%d %H:%M:%S", localtime(&tv.tv_sec));
+        if (ret == 0) {
+            std::cerr << "strftime error" << std::endl;
+            return _stream;
+        }
+        // 毫秒
+        snprintf(time_buf + ret, sizeof(time_buf) - ret, ":%03d", ceil(tv.tv_usec / 1000.0));
         char buf[1024] = {0};
-        snprintf(buf, sizeof(buf), "[%s %s %d %s] ", time_buf, LOG_LEVEL_STR[_level], _line, _func);
+        snprintf(buf, sizeof(buf), "[%s %s file=%s:%d func=%s] ",LOG_LEVEL_STR[_level], time_buf, _file, _line, _func);
         _stream << buf;
         return _stream;
     }
