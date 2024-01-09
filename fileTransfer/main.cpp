@@ -2,53 +2,54 @@
 #include "simple.h"
 #include <algorithm>
 
-int write_response(int sock, int length, int read_fd, TYPE type) {
-    // 写入命令长度
-    int ret = write_command_length(sock, length);
+int read_from_file(FILE* fp, char* buf, int len) {
+    int readSize = 0;
+    while (readSize < len) {
+        int ret = fread(buf + readSize, 1, len - readSize, fp);
+        if (ret < 0) {
+            Perrorf("read error");
+            return -1;
+        } else if (ret == 0) {
+            DEBUG << "readSize:" << readSize;
+            break;
+        }
+        readSize += ret;
+    }
+    return readSize;
+}
+
+/**
+ * @brief 写命令
+ * @param sock socket
+ * @param cmd 命令
+ * @return int
+ * @retval -1 读取失败
+ * @retval 0 socket关闭
+ * @retval >0 写入的字节数
+*/
+int write_response(int sock, int length, FILE* fp, TYPE type) {
+    command_t* cmd = NULL;
+    command_guard guard(cmd);
+    cmd = new_command(type, length);
+    if (length > 0) {
+        int ret = read_from_file(fp, command_inner_data(cmd), length);
+        if (ret < 0) {
+            ERROR << "read file error";
+            return -1;
+        } else if (ret == 0) {
+            ERROR << "read file EOF";
+            return 0;
+        }
+    }
+    int ret = write_command(sock, cmd);
     if (ret < 0) {
-        Perrorf("write length error");
+        ERROR << "write command error";
         return -1;
     } else if (ret == 0) {
         WARN << "socket quit";
         return 0;
     }
-    // 写type
-    write(sock, &type, sizeof(type));
-    DEBUG << "length:[" << length << "] type[" << TYPE_STR[type] << "]";
-    if (length == 1) {
-        return 0;
-    }
-    // 读取文件内容
-    char buf[4096] = {0};
-    int readSize = 0;
-    while (readSize < length) {
-        int maxReadSize = std::min(int(length - readSize), int(sizeof(buf) - 1));
-        DEBUG << "maxReadSize:" << maxReadSize;
-        int ret = readn(read_fd, buf, maxReadSize);
-        if (ret < 0) {
-            ERROR << "read file error";
-            return -1;
-        }
-        if (ret == 0) {
-            Perrorf("read file error");
-            DEBUG << "total[" << length << "] size[" << ret << "] ac["
-                  << readSize << "] write:";
-            break;
-        }
-        readSize += ret;
-        ret = writen(sock, buf, ret);
-        if (ret < 0) {
-            ERROR << "write error";
-            return -1;
-        } else if (ret == 0) {
-            WARN << "socket quit";
-            return 0;
-        }
-        buf[ret] = '\0';
-        DEBUG << "total[" << length << "] size[" << ret << "] ac[" << readSize
-              << "] write:" << buf;
-    }
-    return readSize;
+    return ret;
 }
 
 int check_dir_valid(const char* path) {
@@ -71,9 +72,10 @@ char inner_buffer[4096];
 
 int handle_client(int sock) {
     char buf[4096] = {0};
-    const char* baseDir = "/Users/nichao/";
+    const char* baseDir = "/home/homework/";
     if (check_dir_valid(baseDir) < 0) {
         ERROR << "baseDir invalid";
+        abort();
         return -1;
     }
     while (1) {
@@ -112,8 +114,7 @@ int handle_client(int sock) {
                     perror("popen error");
                     break;
                 }
-                int pfd = fileno(fp);
-                write_response(sock, len, pfd, LIST);
+                write_response(sock, len, fp, LIST);
                 pclose(fp);
                 INFO << "send list success";
                 break;
@@ -130,21 +131,29 @@ int handle_client(int sock) {
                 if (fp == NULL) {
                     Perrorf("fopen error");
                     // 发送文件不存在
-                    write_response(sock, 1, 0, READ);
-                    break;
-                }
-                if (setvbuf(fp, inner_buffer, _IOFBF, sizeof(inner_buffer)) != 0) {
-                    perror("Failed to set buffer");
+                    const char* msg = "file not exist";
+                    FILE* fp = fmemopen((void*)msg, strlen(msg), "r");
+                    if (fp == NULL) {
+                        Perrorf("fmemopen error");
+                        return -1;
+                    }
+                    ret = write_response(sock, strlen(msg), fp, ERR);
+                    if (ret < 0) {
+                        ERROR << "write error";
+                        return -1;
+                    } else if (ret == 0) {
+                        WARN << "socket quit";
+                        return 0;
+                    }
                     fclose(fp);
-                    return 1;
+                    break;
                 }
                 // 发送文件长度
                 fseek(fp, 0, SEEK_END);
                 int fileLen = ftell(fp);
                 // 重置文件指针
                 fseek(fp, 0, SEEK_SET);
-                int fpd = fileno(fp);
-                write_response(sock, fileLen, fpd, READ);
+                write_response(sock, fileLen, fp, READ);
                 fclose(fp);
                 printf("send file success\n");
                 break;

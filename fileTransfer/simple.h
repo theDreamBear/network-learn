@@ -10,6 +10,7 @@ enum TYPE : signed char {
     LIST = 1,
     READ = 2,
     CHECKOUT = 3,
+    ERR = 4,
 };
 
 const char* TYPE_STR[] = {
@@ -17,6 +18,7 @@ const char* TYPE_STR[] = {
     "LIST",
     "READ",
     "CHECKOUT",
+    "ERR"
 };
 
 typedef struct command {
@@ -30,7 +32,7 @@ typedef struct command {
  * @retval CHECKOUT
  */
 static TYPE command_max() {
-    return CHECKOUT;
+    return ERR;
 }
 
 /**
@@ -69,7 +71,7 @@ TYPE command_type(command_t* cmd) {
  * @return int32_t 命令长度
  * @note 用于从data size 获得整个data需要的size
  */
-static int32_t _data_size(int32_t data_size) {
+int32_t _data_size(int32_t data_size) {
     return sizeof(TYPE) + data_size;
 }
 
@@ -238,7 +240,7 @@ void set_command_body(command_t* cmd, const char* data, int32_t len) {
  * @param cmd 命令
  * @return int32_t 写入的数据字节数
  * @retval -1 写入失败
- * @retval >0 写入的字节数
+ * @retval >0 写入的body字节数, 包括type
  */
 int32_t write_command(int sock, command_t* cmd) {
     DEBUG << "write command";

@@ -33,7 +33,7 @@ int readn(int sock, char* buf, int len) {
     return readSize;
 }
 
-int writen(int sock, char* buf, int len) {
+int writen(int sock, const char* buf, int len) {
     int writeSize = 0;
     while (writeSize < len) {
         int ret = write(sock, buf + writeSize, len - writeSize);
