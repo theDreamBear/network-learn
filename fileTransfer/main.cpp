@@ -67,6 +67,8 @@ int check_dir_valid(const char* path) {
     return 0;
 }
 
+char inner_buffer[4096];
+
 int handle_client(int sock) {
     char buf[4096] = {0};
     const char* baseDir = "/Users/nichao/";
@@ -130,6 +132,11 @@ int handle_client(int sock) {
                     // 发送文件不存在
                     write_response(sock, 1, 0, READ);
                     break;
+                }
+                if (setvbuf(fp, inner_buffer, _IOFBF, sizeof(inner_buffer)) != 0) {
+                    perror("Failed to set buffer");
+                    fclose(fp);
+                    return 1;
                 }
                 // 发送文件长度
                 fseek(fp, 0, SEEK_END);
