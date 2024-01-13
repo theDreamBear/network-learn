@@ -3,9 +3,13 @@
 #include <arpa/inet.h>
 using namespace std;
 
-
-int main() {
-    struct hostent* host = gethostbyname("www.baidu.com");
+int test_get_host_by(int argc, char** argv) {
+    if (argc != 2) {
+        cout << "Usage: " << argv[0] << " <domain>" << endl;
+        return -1;
+    }
+    const char* adomain = argv[1];
+    struct hostent* host = gethostbyname(adomain);
     if (host == nullptr) {
         herror("gethostbyname");
         return -1;
@@ -43,4 +47,35 @@ int main() {
         cout << "\t" << inet_ntoa(*(struct in_addr*)domain->h_addr_list[i]) << endl;
     }
     return 0;
+}
+
+
+int test_get_service_by_name(int argc, char** argv) {
+    if (argc != 2) {
+        cout << "Usage: " << argv[0] << " <service>" << endl;
+        return -1;
+    }
+    const char* service = argv[1];
+    
+    if (argc == 3) {
+
+    }
+    struct servent* serv = getservbyname(service, nullptr);
+    if (serv == nullptr) {
+        herror("getservbyname");
+        return -1;
+    }
+    cout << "s_name: " << serv->s_name << endl;
+    cout << "s_aliases: " << endl;
+    for (int i = 0; serv->s_aliases[i] != nullptr; ++i) {
+        cout << "\t" << serv->s_aliases[i] << endl;
+    }
+    cout << "s_port: " << ntohs(serv->s_port) << endl;
+    cout << "s_proto: " << serv->s_proto << endl;
+    return 0;
+}
+
+int main(int argc , char* argv[]) {
+    //test_get_host_by(argc, argv);
+    test_get_service_by_name(argc, argv);
 }
